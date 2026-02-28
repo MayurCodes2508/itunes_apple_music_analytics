@@ -1,16 +1,16 @@
 Staging:
   Tables:
     - name: stg_sales_focused_grain
-      grain: 1 row represents 1 game x 1 platform x 1 year
+      grain: 1 row represents 1 game x platform x year
 
       columns:
-        - name: name (grain)
+        - name: name
           type: text
 
-        - name: platform (grain)
+        - name: platform
           type: text
 
-        - name: year (grain)
+        - name: year
           type: int
 
         - name: genre
@@ -52,13 +52,13 @@ Metrics:
 
 Dimension Attributes:
   columns:
-    - name: name (grain)
+    - name: name
       type: text
 
-    - name: platform (grain)
+    - name: platform
       type: text
 
-    - name: year (grain)
+    - name: year
       type: int
 
     - name: genre
@@ -75,13 +75,10 @@ Intermediate:
 Dimensions:
   Tables:
     - name: dim_release
-      grain: 1 row represents 1 game x 1 platform x 1 year
+      grain: 1 row represents 1 game x platform x year
       columns:
-        - name: release_id (grain)
+        - name: release_id (Surrogate Key which uniquely identifies grain)
           type: text
-
-        - name: game_id
-          type: int   # FK → dim_title
 
         - name: name
           type: text
@@ -98,6 +95,15 @@ Dimensions:
         - name: publisher
           type: text
 
+    - name: dim_region
+      grain: 1 row represents 1 region
+      columns:
+        - name: region_id (Surrogate Key which uniquely identifies grain)
+          type: text
+
+        - name: region
+          type: text
+
 
 Bridges:
   Tables:
@@ -105,23 +111,14 @@ Bridges:
 
 Facts:
   Tables:
-    - name: fact_sales
-      grain: 1 row represents 1 release
+    - name: fact_sales_by_region
+      grain: 1 row represents 1 release x region
       columns:
-        - name: release_id (grain)
+        - name: release_id FK --> PK to dim_release.release_id
           type: text
 
-        - name: na_sales
-          type: float
+        - name: region_id FK --> PK to dim_region.region_id
+          type: text
 
-        - name: eu_sales
-          type: float
-
-        - name: jp_sales
-          type: float
-
-        - name: other_sales
-          type: float
-
-        - name: global_sales
+        - name: sales
           type: float
