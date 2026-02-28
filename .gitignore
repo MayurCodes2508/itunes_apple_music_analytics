@@ -1,6 +1,7 @@
 # dbt
 target/
 dbt_packages/
+dbt_project.yml
 logs/
 
 # Python / Virtual Envs
