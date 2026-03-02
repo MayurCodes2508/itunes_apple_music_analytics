@@ -1,0 +1,20 @@
+08:26:58  Running with dbt=1.11.2
+08:26:59  Registered adapter: postgres=1.10.0
+08:27:00  Unable to do partial parsing because a project dependency has been added
+08:27:04  [WARNING][MissingArgumentsPropertyInGenericTestDeprecation]: Deprecated
+functionality
+Found top-level arguments to test `dbt_utils.expression_is_true` defined on
+'weekly_order_revenue' in package 'ecommerce_orders_analytics'
+(models\intermediate\weekly_order_revenue.yml). Arguments to generic tests
+should be nested under the `arguments` property.
+08:27:05  Found 9 models, 1 seed, 10 data tests, 1 source, 577 macros
+08:27:05  Encountered an error:
+Runtime Error
+  'C' is not a valid method name
+08:27:05  [WARNING][DeprecationsSummary]: Deprecated functionality
+Summary of encountered deprecations:
+- MissingArgumentsPropertyInGenericTestDeprecation: 1 occurrence
+To see all deprecation instances instead of just the first occurrence of each,
+run command again with the `--show-all-deprecations` flag. You may also need to
+run with `--no-partial-parse` as some deprecations are only encountered during
+parsing.
