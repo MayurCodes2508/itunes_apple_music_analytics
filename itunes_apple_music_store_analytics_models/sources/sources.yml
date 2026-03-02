@@ -1,0 +1,39 @@
+version: 2
+
+sources:
+  - name: raw_apple_music
+    database: stellar-display-488810-h8
+    schema: dev_raw
+    tables:
+      - name: album
+        freshness:
+
+      - name: artist
+        freshness:
+
+      - name: customer
+        freshness:
+
+      - name: employee
+        freshness:
+
+      - name: genre
+        freshness:
+
+      - name: invoice
+        freshness:
+
+      - name: invoice_line
+        freshness:
+
+      - name: media_type
+        freshness:
+
+      - name: playlist
+        freshness:
+
+      - name: playlist_track
+        freshness:
+
+      - name: track
+        freshness:

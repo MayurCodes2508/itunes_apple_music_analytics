@@ -1,0 +1,36 @@
+staging:
+  tables:
+    - name: stg_invoice_line_focused
+      description: >
+        Contains invoice_line details, its unique identifier invoice_line_id and also unique identifier
+        for invoice: invoice_id and for track: track_id
+        Grain: 1 row represents 1 invoice_line identified by invoice_line_id
+      
+      dimension_attributes:
+        columns:
+          - name: invoice_line_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: invoice_id
+            description: >
+              Unique identifier for invoice
+            type: int
+
+          - name: track_id
+            description: >
+              Unique identifier for track
+            type: int
+
+      metrics:
+        columns:
+          - name: unit_price
+            description: >
+              Unit Price
+            type: Numeric
+
+          - name: quantity
+            description: >
+              Quantity
+            type: int

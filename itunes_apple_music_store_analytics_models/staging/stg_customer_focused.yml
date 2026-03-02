@@ -1,0 +1,68 @@
+version: 2
+models:
+  - name: stg_customer_focused
+    description: >
+      Staging model for customer,
+      1-M relationship with support_rep_id having multiple customer_id so stg_customer_focused.support_rep_id (FK) ->
+      stg_employee_focused.employee_id (PK),
+      Grain: 1 row represents 1 unique identifier customer_id of customer
+    columns:
+      - name: customer_id
+        description: >
+          Unique identifier for a customer
+        tests:
+          - not_null
+          - unique
+
+      - name: first_name
+        description: >
+          Customer first name
+
+      - name: last_name
+        description: >
+          Customer last name
+
+      - name: company
+        description: >
+          Company the customer works for
+
+      - name: address
+        description: >
+          Customer address
+
+      - name: city
+        description: >
+          City the customer lives in
+
+      - name: state
+        description: >
+          State the customer lives in
+
+      - name: country
+        description: >
+          Country the customer lives in
+
+      - name: postal_code
+        description: >
+          Customer postal code
+
+      - name: phone
+        description: >
+          Customer phone number
+          
+      - name: fax
+        description: >
+          Customer fax
+
+      - name: email
+        description: >
+          Customer email
+
+      - name: support_rep_id
+        description: >
+          Unique identifier for an employee, also the Fk referencing stg_employee_focused.employee_id PK
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_employee_focused')
+                field: employee_id

@@ -1,0 +1,28 @@
+version: 2
+models:
+  - name: stg_album_focused
+    description: >
+      Staging model for album,
+      1-M relationship with artist_id having multiple album_id so stg_album_focused.artist_id (FK) ->
+      stg_artist_focused.artist_id (PK),
+      Grain: 1 row represents 1 unique identifier album_id of album
+    columns:
+      - name: album_id
+        description: >
+          Unique identifier for an album
+        tests:
+          - not_null
+          - unique
+
+      - name: title
+        description: >
+          Name of the album
+
+      - name: artist_id
+        description: >
+          Unique identifier for an artist, also the Fk referencing stg_artist_focused.artist_id PK
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_artist_focused')
+                field: artist_id

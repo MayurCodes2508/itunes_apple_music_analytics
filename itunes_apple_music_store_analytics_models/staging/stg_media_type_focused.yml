@@ -1,0 +1,17 @@
+version: 2
+models:
+  - name: stg_media_type_focused
+    description: >
+      Staging model for media type
+      Grain: 1 row represents 1 unique identifier media_type_id of media type
+    columns:
+      - name: media_type_id
+        description: >
+          Unique identifier for a media type
+        tests:
+          - not_null
+          - unique
+
+      - name: name
+        description: >
+          Name of the media type

@@ -1,0 +1,58 @@
+staging:
+  tables:
+    - name: stg_invoice_focused
+      description: >
+        Contains invoice details, its unique identifier invoice_id and also unique identifier
+        for customer: customer_id
+        Grain: 1 row represents 1 invoice identified by invoice_id
+      
+      dimension_attributes:
+        columns:
+          - name: invoice_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: customer_id
+            description: >
+              Unique identifier for customer
+            type: int
+
+          - name: invoice_date
+            description: >
+              Invoice date
+            type: timestamp
+
+          - name: billing_address
+            description: >
+              Billing address
+            type: text
+
+          - name: billing_city
+            description: >
+              Billing city
+            type: text
+
+          - name: billing_state
+            description: >
+              Billing state
+            type: text
+
+          - name: billing_country
+            description: >
+              Billing country
+            type: text
+
+          - name: billing_postal_code
+            description: >
+              Billing postal code
+            type: text
+
+
+
+      metrics:
+        columns:
+          - name: total
+            description: >
+              Bill total
+            type: Numeric

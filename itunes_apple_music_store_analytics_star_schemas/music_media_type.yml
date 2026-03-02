@@ -1,0 +1,21 @@
+staging:
+  tables:
+    - name: stg_media_type_focused
+      description: >
+        Contains media type details, its unique identifier media_type_id
+        Grain: 1 row represents 1 media type identified by media_type_id
+      
+      dimension_attributes:
+        columns:
+          - name: media_type_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: name
+            description: >
+              Name of the media type
+            type: text
+
+      metrics:
+        columns: none

@@ -1,0 +1,18 @@
+staging:
+  tables:
+    - name: stg_playlist_focused
+      description: >
+        Contains playlist details, its unique identifier playlist_id
+        Grain: 1 row represents 1 playlist identified by playlist_id
+      
+      dimension_attributes:
+        columns:
+          - name: playlist_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: name
+            description: >
+              Name of the playlist
+            type: text

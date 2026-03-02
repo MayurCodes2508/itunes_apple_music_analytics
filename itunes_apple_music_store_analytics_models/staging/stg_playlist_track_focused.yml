@@ -1,0 +1,34 @@
+version: 2
+models:
+  - name: stg_playlist_track_focused
+    description: >
+      Staging model for playlist_track,
+      M:N relationship with both playlist_id and track_id having multiple of each other so stg_playlist_track_focused.playlist_id
+      (FK) -> stg_playlist_focused.playlist_id (PK) and stg_playlist_track_focused.track_id (FK) -> stg_track_focused.track_id (PK),
+      Grain: 1 row represents 1 unique identifier playlist_id of playlist x 1 unique identifier track_id of track
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - playlist_id
+              - track_id  
+    columns:
+      - name: playlist_id
+        description: >
+          Unique identifier for a playlist
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_playlist_focused')
+                field: playlist_id
+
+      - name: track_id
+        description: >
+          Unique identifier for a track
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_track_focused')
+                field: track_id

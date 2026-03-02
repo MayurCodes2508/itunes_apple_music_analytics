@@ -1,0 +1,17 @@
+version: 2
+models:
+  - name: stg_playlist_focused
+    description: >
+      Staging model for playlist
+      Grain: 1 row represents 1 unique identifier playlist_id of playlist
+    columns:
+      - name: playlist_id
+        description: >
+          Unique identifier for a playlist
+        tests:
+          - not_null
+          - unique
+
+      - name: name
+        description: >
+          Name of the playlist

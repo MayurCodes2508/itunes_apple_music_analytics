@@ -1,0 +1,21 @@
+staging:
+  tables:
+    - name: stg_artist_focused
+      description: >
+        Contains artist name, its unique identifier artist_id
+        Grain: 1 row represents 1 artist identified by artist_id
+      
+      dimension_attributes:
+        columns:
+          - name: artist_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: name
+            description: >
+              Name of the artist
+            type: text
+
+      metrics:
+        columns: none

@@ -1,0 +1,58 @@
+staging:
+  tables:
+    - name: stg_track_focused
+      description: >
+        Contains track details, its unique identifier track_id and also unique identifier
+        for album: album_id, for media_type: media_type_id, for genre: genre_id
+        Grain: 1 row represents 1 track identified by track_id
+      
+      dimension_attributes:
+        columns:
+          - name: track_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: name
+            description: >
+              Name of the track
+            type: text
+
+          - name: album_id
+            description: >
+              Unique identifier for album
+            type: int
+
+          - name: media_type_id
+            description: >
+              Unique identifier for media_type
+            type: int
+
+          - name: genre_id
+            description: >
+              Unique identifier for genre
+            type: int
+
+          - name: composer
+            description: >
+              Track composer
+            type: text
+
+          - name: milliseconds
+            description: >
+              Track duration in milliseconds
+            type: int
+
+          - name: bytes
+            description: >
+              Number of bytes of track
+            type: int
+
+
+
+      metrics:
+        columns:
+          - name: unit_price
+            description: >
+              Track price
+            type: Numeric

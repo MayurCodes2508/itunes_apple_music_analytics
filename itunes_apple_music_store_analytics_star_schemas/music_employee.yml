@@ -1,0 +1,91 @@
+staging:
+  tables:
+    - name: stg_employee_focused
+      description: >
+        Contains employee details, its unique identifier employee_id
+        Grain: 1 row represents 1 employee identified by employee_id
+      
+      dimension_attributes:
+        columns:
+          - name: employee_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: last_name
+            description: >
+              Employee last name
+            type: text
+
+          - name: first_name
+            description: >
+              Employee first name
+            type: text
+
+          - name: title
+            description: >
+              Job title
+            type: text
+
+          - name: reports_to
+            description: >
+              Manager's of employee that they report to
+            type: int
+
+          - name: levels
+            description: >
+              level of employee
+            type: text
+
+          - name: birth_date
+            description: >
+              Employee birth date
+            type: date
+
+          - name: hire_date
+            description: >
+              Employee hire date
+            type: date
+
+          - name: address
+            description: >
+              Employee address
+            type: text
+
+          - name: city
+            description: >
+              City employee lives in
+            type: text
+
+          - name: state
+            description: >
+              State employee lives in
+            type: text
+
+          - name: country
+            description: >
+              Country employee lives in
+            type: text
+
+          - name: postal_code
+            description: >
+              Employee postal code 
+            type: text
+
+          - name: phone
+            description: >
+              Employee phone number
+            type: text
+
+          - name: fax
+            description: >
+              Employee fax number
+            type: text
+
+          - name: email
+            description: >
+              Employee email id
+            type: text
+
+      metrics:
+        columns: none

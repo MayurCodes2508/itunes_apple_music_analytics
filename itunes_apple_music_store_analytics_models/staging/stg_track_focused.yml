@@ -1,0 +1,81 @@
+version: 2
+models:
+  - name: stg_track_focused
+    description: >
+      Staging model for track,
+      1-M relationship with album_id, media_type_id, genre_id
+      having multiple track_id so stg_track_focused.album_id (FK) ->
+      stg_album_focused.album_id (PK), stg_track_focused.media_type_id (FK) ->
+      stg_media_type_focused.media_type_id (PK), stg_track_focused.genre_id (FK) ->
+      stg_genre_focused.genre_id (PK),
+      Grain: 1 row represents 1 unique identifier invoice_id of invoice
+    columns:
+      - name: track_id
+        description: >
+          Unique identifier for a track
+        tests:
+          - not_null
+          - unique
+
+      - name: name
+        description: >
+          Name of the track
+
+      - name: album_id
+        description: >
+          Unique identifier for an album
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_album_focused')
+                field: album_id
+
+      - name: media_type_id
+        description: >
+          Unique identifier for a media_type
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_media_type_focused')
+                field: media_type_id
+
+      - name: genre_id
+        description: >
+          Unique identifier for a genre
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_genre_focused')
+                field: genre_id
+
+      - name: composer
+        description: >
+          Composer of the track,
+          (multi_valued)
+
+      - name: milliseconds
+        description: >
+          Milliseconds
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+
+      - name: bytes
+        description: >
+          Bytes
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+
+      - name: unit_price
+        description: >
+          Unit Price
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'

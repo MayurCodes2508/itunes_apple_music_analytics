@@ -1,0 +1,77 @@
+staging:
+  tables:
+    - name: stg_customer_focused
+      description: >
+        Contains customer details, its unique identifier customer_id and also unique identifier
+        for support_rep: support_rep_id
+        Grain: 1 row represents 1 customer identified by customer_id
+      
+      dimension_attributes:
+        columns:
+          - name: customer_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: first_name
+            description: >
+              Customer first name
+            type: text
+
+          - name: last_name
+            description: >
+              Customer last name
+            type: text
+
+          - name: company
+            description: >
+              Company the customer works for
+            type: text
+
+          - name: address
+            description: >
+              Customer address
+            type: text
+
+          - name: city
+            description: >
+              City the customer lives in
+            type: text
+
+          - name: state
+            description: >
+              State the customer lives in
+            type: text
+
+          - name: country
+            description: >
+              Country the customer lives in
+            type: text
+
+          - name: postal_code
+            description: >
+              Customer postal_code
+            type: text
+
+          - name: phone
+            description: >
+              Customer phone number
+            type: text
+
+          - name: fax
+            description: >
+              Customer fax number
+            type: text
+
+          - name: email
+            description: >
+              Customer email id
+            type: text
+
+          - name: support_rep_id
+            description: >
+              Unique identifier for support rep
+            type: int
+
+      metrics:
+        columns: none

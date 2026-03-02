@@ -1,0 +1,27 @@
+staging:
+  tables:
+    - name: stg_album_focused
+      description: >
+        Contains album name, its unique identifier album_id and also unique identifier
+        for artist: artist_id,
+        Grain: 1 row represents 1 album identified by album_id
+      
+      dimension_attributes:
+        columns:
+          - name: album_id
+            description: >
+              Unique identifier for grain
+            type: int
+
+          - name: title
+            description: >
+              Name of the album,
+            type: text
+
+          - name: artist_id
+            description: >
+              Unique identifier for artist
+            type: int
+
+      metrics:
+        columns: none

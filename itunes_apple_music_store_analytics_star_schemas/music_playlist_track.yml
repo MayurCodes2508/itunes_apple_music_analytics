@@ -1,0 +1,23 @@
+staging:
+  tables:
+    - name: stg_playlist_track_focused
+      description: >
+        Contains playlist and track , its unique identifier playlist_id and 
+        track_id,
+        Grain: 1 row represents 1 playlist x track identified by playlist_id
+        and track_id
+      
+      dimension_attributes:
+        columns:
+          - name: playlist_id
+            description: >
+              Unique identifier for playlist
+            type: int
+
+          - name: track_id
+            description: >
+              Unique identifier for track
+            type: int
+
+      metrics:
+        columns: none

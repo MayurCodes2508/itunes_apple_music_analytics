@@ -1,0 +1,57 @@
+version: 2
+models:
+  - name: stg_invoice_focused
+    description: >
+      Staging model for invoice,
+      1-M relationship with customer_id having multiple invoice_id so stg_invoice_focused.customer_id (FK) ->
+      stg_customer_focused.customer_id (PK),
+      Grain: 1 row represents 1 unique identifier invoice_id of invoice
+    columns:
+      - name: invoice_id
+        description: >
+          Unique identifier for a invoice
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: >
+          Unique identifier for a customer
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_customer_focused')
+                field: customer_id
+
+      - name: invoice_date
+        description: >
+          Invoice date
+
+      - name: billing_address
+        description: >
+          Billing address
+
+      - name: billing_city
+        description: >
+          Billing city
+
+      - name: billing_state
+        description: >
+          Billing state
+
+      - name: billing_country
+        description: >
+          Billing country
+
+      - name: billing_postal_code
+        description: >
+          Billing postal code
+
+      - name: total
+        description: >
+          Total invoice 
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
