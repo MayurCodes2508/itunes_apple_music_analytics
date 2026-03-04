@@ -1,0 +1,20 @@
+version: 2
+models:
+  - name: dim_composer
+    description: >
+      Dimensional model for composer,
+      1 row represents 1 unique identifier composer_key of composer
+    columns:
+      - name: composer_key
+        description: >
+          Unique identifier for composer
+        tests:
+          - not_null
+          - unique
+
+      - name: composer_name
+        description: >
+          Composer of a track
+        tests:
+          - not_null
+          - unique

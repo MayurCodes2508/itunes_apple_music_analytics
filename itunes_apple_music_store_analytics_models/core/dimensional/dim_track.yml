@@ -1,0 +1,58 @@
+version: 2
+models:
+  - name: dim_track
+    description: >
+      Staging model for track,
+      Grain: 1 row represents 1 unique identifier track_key of track
+    columns:
+      - name: track_key
+        description: >
+          Unique identifier for a track
+        tests:
+          - not_null
+          - unique
+
+      - name: track_id
+        description: >
+          Unique identifier for a track
+        tests:
+          - not_null
+          - unique
+
+      - name: track_name
+        description: >
+          Track name
+
+      - name: album_name
+        description: >
+          Album name
+
+      - name: artist_name
+        description: >
+          Artist name
+
+      - name: genre_name
+        description: >
+          Genre name
+
+      - name: media_type_name
+        description: >
+          Media type name
+
+      - name: milliseconds
+        description: >
+          Milliseconds
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'
+
+      - name: bytes
+        description: >
+          Bytes
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: '>= 0'

@@ -6,6 +6,7 @@ SELECT DISTINCT invoice_date AS date,
 	   EXTRACT(MONTH FROM invoice_date) AS month,
 	   EXTRACT(DAY FROM invoice_date) AS day
 FROM {{ ref('stg_invoice_focused') }}
+WHERE invoice_date IS NOT NULL
 )
 
 SELECT {{ dbt_utils.generate_surrogate_key(['date']) }} AS date_key,

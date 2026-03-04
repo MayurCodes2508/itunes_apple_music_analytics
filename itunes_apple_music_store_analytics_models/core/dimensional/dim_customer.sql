@@ -1,7 +1,7 @@
 {{ config(materialized = 'table') }}
 
-SELECT {{ dbt_utils.generate_surrogate_key(['customer_id']) }} AS customer_key,
-       customer_id,
+WITH base AS (
+SELECT customer_id,
 	   first_name,
 	   last_name,
 	   company,
@@ -15,3 +15,22 @@ SELECT {{ dbt_utils.generate_surrogate_key(['customer_id']) }} AS customer_key,
 	   email,
 	   support_rep_id
 FROM {{ ref('stg_customer_focused') }}
+)
+
+SELECT {{ dbt_utils.generate_surrogate_key(['customer_id']) }} AS customer_key,
+       b.customer_id,
+	   b.first_name,
+	   b.last_name,
+	   b.company,
+	   b.address,
+	   b.city,
+	   b.state,
+	   b.country,
+	   b.postal_code,
+	   b.phone,
+	   b.fax,
+	   b.email,
+	   de.employee_key
+FROM base b
+LEFT JOIN {{ ref('dim_employee') }} de
+ON b.support_rep_id = de.employee_id

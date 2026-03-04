@@ -1,0 +1,75 @@
+version: 2
+models:
+  - name: dim_customer
+    description: >
+      Dimensional model for customer,
+      1-M relationship with employee_key having multiple customer_key so dim_customer.employee_key (FK) ->
+      dim_employee.employee_key (PK),
+      Grain: 1 row represents 1 unique identifier customer_key of customer
+    columns:
+      - name: customer_key
+        description: >
+          Unique identifier for a customer
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: >
+          Unique identifier for a customer
+        tests:
+          - not_null
+          - unique
+
+      - name: first_name
+        description: >
+          Customer first name
+
+      - name: last_name
+        description: >
+          Customer last name
+
+      - name: company
+        description: >
+          Company the customer works for
+
+      - name: address
+        description: >
+          Customer address
+
+      - name: city
+        description: >
+          City the customer lives in
+
+      - name: state
+        description: >
+          State the customer lives in
+
+      - name: country
+        description: >
+          Country the customer lives in
+
+      - name: postal_code
+        description: >
+          Customer postal code
+
+      - name: phone
+        description: >
+          Customer phone number
+          
+      - name: fax
+        description: >
+          Customer fax
+
+      - name: email
+        description: >
+          Customer email
+
+      - name: employee_key
+        description: >
+          Unique identifier for an employee
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_employee')
+                field: employee_key

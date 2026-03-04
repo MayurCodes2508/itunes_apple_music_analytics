@@ -1,0 +1,85 @@
+version: 2
+models:
+  - name: dim_employee
+    description: >
+      Dimensional model for employee,
+      Grain: 1 row represents 1 unique identifier employee_key of employee
+    columns:
+      - name: employee_key
+        description: >
+          Unique identifier for an employee
+        tests:
+          - not_null
+          - unique
+
+      - name: employee_id
+        description: >
+          Unique identifier for an employee
+        tests:
+          - not_null
+          - unique
+
+      - name: last_name
+        description: >
+          Employee last name
+
+      - name: first_name
+        description: >
+          Employee first name
+
+      - name: title
+        description: >
+          Employee job title
+
+      - name: reports_to
+        description: >
+          Unique identifier for employee's manager
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_employee')
+                field: employee_id
+
+      - name: levels
+        description: >
+          Employee job title level
+
+      - name: birth_date
+        description: >
+          Employee birth date
+
+      - name: hire_date
+        description: >
+          Employee hired date
+
+      - name: address
+        description: >
+          Employee address
+
+      - name: city
+        description: >
+          Employee city
+          
+      - name: state
+        description: >
+          Employee state
+
+      - name: country
+        description: >
+          Employee country
+
+      - name: postal_code
+        description: >
+          Employee postal code
+
+      - name: phone
+        description: >
+          Employee phone number
+          
+      - name: fax
+        description: >
+          Employee fax
+
+      - name: email
+        description: >
+          Employee email

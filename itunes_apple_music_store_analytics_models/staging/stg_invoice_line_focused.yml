@@ -2,14 +2,14 @@ version: 2
 models:
   - name: stg_invoice_line_focused
     description: >
-      Staging model for invoice_line,
+      Staging model for invoice line,
       1-M relationship with invoice_id and track_id having multiple invoice_line_id so stg_invoice_line_focused.invoice_id and track_id
       (FK) -> stg_invoice_focused.invoice_id (PK) and stg_track_focused.track_id (PK),
-      Grain: 1 row represents 1 unique identifier invoice_line_id of invoice_line
+      Grain: 1 row represents 1 unique identifier invoice_line_id of invoice line
     columns:
       - name: invoice_line_id
         description: >
-          Unique identifier for an invoice_line
+          Unique identifier for an invoice line
         tests:
           - not_null
           - unique

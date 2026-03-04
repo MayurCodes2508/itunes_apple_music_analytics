@@ -1,42 +1,30 @@
 {{ config(materialized = 'table') }}
 
-WITH invoice_line_joining AS (
+WITH base AS (
 SELECT invoice_line_id,
-       invoice_id,
+	   invoice_id,
        track_id,
        unit_price,
        quantity
 FROM {{ ref('stg_invoice_line_focused') }}
-),
-
-invoice_joining AS (
-SELECT il.invoice_line_id,
-       i.invoice_key,
-	   i.date_key,
-       c.customer_key,
-       e.employee_key,
-       il.track_id,
-       il.unit_price,
-       il.quantity
-FROM invoice_line_joining il
-JOIN {{ ref('dim_invoice') }} i
-ON il.invoice_id = i.invoice_id
-JOIN {{ ref('dim_customer') }} c
-ON i.customer_id = c.customer_id
-JOIN {{ ref('dim_employee') }} e
-ON c.support_rep_id = e.employee_id
 )
 
-SELECT {{ dbt_utils.generate_surrogate_key(['ij.invoice_line_id']) }} AS invoice_line_key,
-       ij.invoice_line_id,
-       ij.invoice_key,
-	   ij.date_key,
-	   ij.customer_key,
-	   ij.employee_key,
+SELECT {{ dbt_utils.generate_surrogate_key(['invoice_line_id']) }} AS invoice_line_key,
+       b.invoice_line_id,
+       di.invoice_key,
+	   di.date_key,
+	   di.customer_key,
+	   de.employee_key,
 	   dt.track_key,
-	   ij.unit_price,
-	   ij.quantity,
-	   ij.unit_price * ij.quantity AS total_revenue
-FROM invoice_joining ij
+	   b.unit_price,
+	   b.quantity,
+	   b.unit_price * b.quantity AS total_revenue
+FROM base b
+JOIN {{ ref('dim_invoice') }} di
+ON b.invoice_id = di.invoice_id
+JOIN {{ ref('dim_customer') }} dc
+ON di.customer_key = dc.customer_key
+JOIN {{ ref('dim_employee') }} de
+ON dc.employee_key = de.employee_key
 JOIN {{ ref('dim_track') }} dt
-ON ij.track_id = dt.track_id
+ON b.track_id = dt.track_id

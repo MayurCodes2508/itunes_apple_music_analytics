@@ -1,0 +1,40 @@
+version: 2
+models:
+  - name: dim_invoice
+    description: >
+      Dimensional model for invoice,
+      Grain: 1 row represents 1 unique identifier invoice_id of invoice
+    columns:
+      - name: invoice_key
+        description: >
+          Unique identifier for a invoice
+        tests:
+          - not_null
+          - unique
+
+      - name: invoice_id
+        description: >
+          Unique identifier for a invoice
+        tests:
+          - not_null
+          - unique
+
+      - name: billing_address
+        description: >
+          Billing address
+
+      - name: billing_city
+        description: >
+          Billing city
+
+      - name: billing_state
+        description: >
+          Billing state
+
+      - name: billing_country
+        description: >
+          Billing country
+
+      - name: billing_postal_code
+        description: >
+          Billing postal code

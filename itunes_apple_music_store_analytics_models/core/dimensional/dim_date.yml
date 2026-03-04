@@ -1,0 +1,32 @@
+version: 2
+models:
+  - name: dim_date
+    description: >
+      Dimensional model for date,
+      1 row represents 1 unique identifier date_key of date
+    columns:
+      - name: date_key
+        description: >
+          Unique identifier for date
+        tests:
+          - not_null
+          - unique
+
+      - name: date
+        description: >
+          Date
+        tests:
+          - not_null
+          - unique
+
+      - name: year
+        description: >
+          Year
+
+      - name: month
+        description: >
+          Month
+
+      - name: day
+        description: >
+          Day

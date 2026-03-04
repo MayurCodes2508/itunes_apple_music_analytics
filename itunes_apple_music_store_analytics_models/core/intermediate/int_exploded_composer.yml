@@ -1,0 +1,25 @@
+version: 2
+models:
+  - name: int_exploded_composer
+    description: >
+      Intermediate model for composer,
+      This is a multi-valued attribute taken from stg_track_focused to be exploded
+      and made into single-valued,
+      M:N relationship and no unique combination of columns,
+      No true grain
+    columns:
+      - name: track_id
+        description: >
+          Unique identifier for track
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_track_focused')
+                field: track_id
+
+      - name: composer_name
+        description: >
+          Composer of a track
+        tests:
+          - not_null

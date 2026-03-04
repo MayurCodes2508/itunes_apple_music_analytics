@@ -1,6 +1,6 @@
-{{ config(materialized = 'table') }}
+{{ config(materialized = 'view') }}
 
-SELECT track_id,
+SELECT DISTINCT track_id,
        TRIM(exploded_composer) AS composer_name
 FROM {{ ref('stg_track_focused') }}
 CROSS JOIN UNNEST(SPLIT(composer, ',')) AS exploded_composer

@@ -1,0 +1,34 @@
+version: 2
+models:
+  - name: bridge_playlist_track
+    description: >
+      Bridge model for playlist and track,
+      M:N relationship with both playlist_key and track_key having multiple of each other so bridge_playlist_track.playlist_key
+      (FK) -> dim_playlist.playlist_key (PK) and bridge_playlist_track.track_key (FK) -> dim_track.track_key (PK),
+      Grain: 1 row represents 1 unique identifier playlist_key of playlist x 1 unique identifier track_key of track
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - playlist_key
+              - track_key 
+    columns:
+      - name: playlist_key
+        description: >
+          Unique identifier for a playlist
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_playlist')
+                field: playlist_key
+
+      - name: track_key
+        description: >
+          Unique identifier for a track
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_track')
+                field: track_key

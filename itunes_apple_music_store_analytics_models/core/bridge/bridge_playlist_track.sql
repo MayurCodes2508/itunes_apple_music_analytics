@@ -1,15 +1,15 @@
 {{ config(materialized = 'table') }}
 
-WITH track AS (
-SELECT DISTINCT dt.track_key,
-       s.playlist_id
-FROM {{ ref('dim_track') }} dt
-JOIN {{ ref('stg_playlist_track_focused') }} s
-ON dt.track_id = s.track_id
+WITH base AS (
+SELECT playlist_id,
+       track_id
+FROM {{ ref('stg_playlist_track_focused') }} 
 )
 
-SELECT t.track_key,
-       dp.playlist_key
-FROM track t
+SELECT dp.playlist_key,
+       dt.track_key
+FROM base b
 JOIN {{ ref('dim_playlist') }} dp
-ON t.playlist_id = dp.playlist_id
+ON b.playlist_id = dp.playlist_id
+JOIN {{ ref('dim_track') }} dt
+ON b.track_id = dt.track_id

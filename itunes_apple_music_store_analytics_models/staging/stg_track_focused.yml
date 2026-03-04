@@ -8,7 +8,7 @@ models:
       stg_album_focused.album_id (PK), stg_track_focused.media_type_id (FK) ->
       stg_media_type_focused.media_type_id (PK), stg_track_focused.genre_id (FK) ->
       stg_genre_focused.genre_id (PK),
-      Grain: 1 row represents 1 unique identifier invoice_id of invoice
+      Grain: 1 row represents 1 unique identifier track_id of track
     columns:
       - name: track_id
         description: >
