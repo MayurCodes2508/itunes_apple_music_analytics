@@ -12,34 +12,75 @@ Raw → Staging → Core (Dimensional Model) → Marts
 
 ---
 
-## 🏗 Architecture
+# 📈 Project Metrics
 
-### 🔹 Staging Layer
-Responsible for:
-- Data type standardization
-- Column renaming & trimming
-- Timestamp parsing
-- Grain alignment
-- Source normalization
-- Basic data validation
+| Component | Count |
+|----------|------|
+| Models | 37 |
+| Seeds | 11 |
+| Sources | 11 |
+| Data Tests | 108 |
+| Warehouse | BigQuery |
+| Transformation Tool | dbt |
 
-Data quality tests applied:
-- `not_null`
-- `unique`
-- `unique_combination_of_columns`
-- `relationships`
-- Expression checks (e.g., numeric fields >= 0)
+This project includes **extensive automated testing and dimensional modeling practices**, reflecting production-style analytics engineering workflows.
 
 ---
 
-### 🔹 Core Layer (Dimensional Model)
+# 🏗 Architecture
 
-Star schema implementation with clear grain discipline.
+## 🔹 Raw Layer
 
-#### 🧾 Fact Table
-- `fact_invoice_line` (Atomic grain: invoice line level)
+Raw datasets are ingested into the warehouse using **dbt seeds**.
 
-#### 📐 Dimension Tables
+This layer represents the landing zone of source data before any transformation or validation occurs.
+
+---
+
+## 🔹 Staging Layer
+
+Responsible for preparing raw data for downstream modeling.
+
+Key responsibilities include:
+
+- Data type standardization
+- Column renaming and trimming
+- Timestamp parsing and normalization
+- Grain alignment
+- Source normalization
+- Initial data validation
+
+The staging layer ensures that **raw ingestion issues are caught early before propagating into analytical models**.
+
+---
+
+# 🔹 Core Layer (Dimensional Model)
+
+The core layer implements a **star schema** designed for analytical workloads.
+
+This layer enforces:
+
+- Business logic
+- Dimensional modeling rules
+- Referential integrity
+- Surrogate key strategy
+
+---
+
+## 🧾 Fact Table
+
+### `fact_invoice_line`
+
+Grain:
+
+```
+Invoice Line Level (Atomic Fact)
+```
+
+---
+
+## 📐 Dimension Tables
+
 - `dim_customer`
 - `dim_employee`
 - `dim_track`
@@ -51,22 +92,65 @@ Star schema implementation with clear grain discipline.
 - `dim_date`
 - `dim_invoice`
 
-#### 🔗 Bridge Tables (Many-to-Many Modeling)
+---
+
+## 🔗 Bridge Tables (Many-to-Many Modeling)
+
 - `bridge_playlist_tracks`
 - `bridge_track_composer`
 
-Key modeling principles:
-- Atomic fact design
-- Surrogate key strategy
-- Referential integrity enforcement
-- Separation of staging and business logic
-- Conformed dimensions across models
+These resolve many-to-many relationships between entities such as:
+
+- Tracks ↔ Playlists
+- Tracks ↔ Composers
 
 ---
 
-## 📊 Marts Layer (Business-Facing Models)
+### Core Modeling Principles
 
-The following analytical marts were built:
+- Atomic fact table design
+- Deterministic surrogate key generation
+- Dimension conformance
+- Referential integrity across fact and dimensions
+- Separation of staging and business logic
+
+---
+
+# 🧪 Data Quality & Testing
+
+The project implements **108 automated data tests** across staging and core layers using **dbt**.
+
+### Structural Integrity
+
+- `not_null` tests
+- `unique` tests
+
+### Referential Integrity
+
+- `relationships` tests ensuring fact-to-dimension dependencies
+
+### Grain Enforcement
+
+- `unique_combination_of_columns` tests for bridge tables
+
+### Business Rule Validation
+
+Expression tests including:
+
+- `quantity >= 0`
+- `unit_price >= 0`
+- `total_revenue >= 0`
+- `milliseconds >= 0`
+
+These tests ensure **data reliability, model correctness, and protection against upstream data issues**.
+
+---
+
+# 📊 Marts Layer (Business-Facing Models)
+
+The marts layer exposes curated analytical datasets for business analysis.
+
+Implemented marts include:
 
 - `mart_avg_prices_of_different_types_of_music`
 - `mart_best_customers`
@@ -85,6 +169,7 @@ The following analytical marts were built:
 - `mart_tracks_with_song_length_longer_than_avg_length`
 
 These marts enable:
+
 - Revenue analysis
 - Customer segmentation
 - Genre and artist trend identification
@@ -93,42 +178,94 @@ These marts enable:
 
 ---
 
-## 🔁 Incremental & Temporal Strategy
+# 📂 Project Structure
 
-The project incorporates:
+```
+models/
+│
+├── staging
+│   └── Source standardization & data cleaning
+│
+├── intermediate
+│   └── Data normalization & preprocessing logic
+│
+├── core
+│   ├── dimensions
+│   │   └── Conformed dimension models
+│   │
+│   ├── facts
+│   │   └── Atomic transactional fact tables
+│   │
+│   └── bridges
+│       └── Many-to-many relationship resolution
+│
+└── marts
+    └── Business-facing analytical datasets
+```
+
+This layered structure enforces **clear separation between raw data preparation, business logic modeling, and analytical consumption layers**.
+
+---
+
+# 🔁 Incremental & Temporal Strategy
+
+The warehouse design supports production-ready temporal modeling patterns including:
 
 - Incremental modeling patterns
-- SCD (Type 1 & Type 2) design readiness
+- SCD Type 1 / Type 2 readiness
 - Surrogate key determinism
 - Late arriving data considerations
-- Merge-based update strategy (BigQuery compatible)
+- Merge-based update strategy compatible with BigQuery
 
 ---
 
-## 🧪 Data Quality & Governance
+# 🛠 Tech Stack
 
-Data quality enforcement includes:
-
-- Primary key validation
-- Grain enforcement
-- Relationship integrity checks
-- Business rule constraints
-- Controlled transformation layering
-
-This ensures reliable downstream analytics and metric consistency.
+- **BigQuery** — Cloud Data Warehouse
+- **dbt** — Data Transformation & Modeling
+- **SQL**
+- **Git** — Version Control
 
 ---
 
-## 🛠 Tech Stack
+# ▶️ Running the Project
 
-- **BigQuery** (Cloud Data Warehouse)
-- **dbt** (Data Transformation & Modeling)
-- SQL
-- Git (Version Control)
+To reproduce the warehouse pipeline:
+
+### Install dependencies
+
+```
+pip install dbt-bigquery
+```
+
+### Load raw datasets
+
+```
+dbt seed
+```
+
+### Build the warehouse models
+
+```
+dbt run
+```
+
+### Run data quality tests
+
+```
+dbt test
+```
+
+### Generate documentation
+
+```
+dbt docs generate
+dbt docs serve
+```
 
 ---
 
-## 🎯 Business Objectives
+# 🎯 Business Objectives
 
 The warehouse enables analysis of:
 
@@ -141,7 +278,7 @@ The warehouse enables analysis of:
 
 ---
 
-## 🧠 Key Concepts Applied
+# 🧠 Key Concepts Applied
 
 - Dimensional Modeling
 - Star Schema Architecture
@@ -150,20 +287,25 @@ The warehouse enables analysis of:
 - Surrogate Key Strategy
 - Layered Warehouse Architecture
 - ELT Paradigm
-- Data Quality Testing in dbt
+- Data Quality Testing with dbt
+- Referential Integrity Enforcement
 
 ---
 
-## 🔮 Future Enhancements
+# 🔮 Future Enhancements
 
-- Full production-grade SCD Type 2 implementation
-- Cost-aware partitioning & clustering optimization
-- CI/CD integration for dbt workflows
-- Performance benchmarking & scan optimization
+Planned improvements include:
+
+- Production-grade SCD Type 2 implementation
+- Cost-aware partitioning and clustering strategies
+- CI/CD pipeline integration for dbt deployments
+- Query scan optimization and cost monitoring
 - Environment separation (dev / prod)
 
 ---
 
-## 📌 Summary
+# 📌 Summary
 
-This project demonstrates enterprise-style analytics engineering practices focused on semantic clarity, model integrity, and scalable warehouse design using modern ELT principles.
+This project demonstrates enterprise-style analytics engineering practices focused on semantic clarity, dimensional integrity, and scalable warehouse design using modern ELT principles.
+
+The implementation emphasizes **robust data quality validation, layered modeling architecture, and production-ready analytical design**.
