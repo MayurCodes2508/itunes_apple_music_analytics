@@ -4,7 +4,7 @@ SELECT DISTINCT dc.email,
        dc.first_name,
 	   dc.last_name,
 	   dt.genre_name
-FROM {{ ref('dim_customer') }} dc
+FROM {{ ref('dim_customer_current') }} dc
 JOIN {{ ref('fact_invoice_line') }} f
 ON dc.customer_key = f.customer_key
 JOIN {{ ref('dim_track') }} dt

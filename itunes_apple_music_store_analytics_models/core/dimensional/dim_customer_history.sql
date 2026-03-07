@@ -13,11 +13,13 @@ SELECT customer_id,
 	   phone,
 	   fax,
 	   email,
-	   support_rep_id
-FROM {{ ref('stg_customer_focused') }}
+	   support_rep_id,
+       dbt_valid_from,
+       dbt_valid_to
+FROM {{ ref('snapshot_customer') }}
 )
 
-SELECT {{ dbt_utils.generate_surrogate_key(['customer_id']) }} AS customer_key,
+SELECT {{ dbt_utils.generate_surrogate_key(['customer_id', 'dbt_valid_from']) }} AS customer_key,
        b.customer_id,
 	   b.first_name,
 	   b.last_name,
@@ -30,7 +32,9 @@ SELECT {{ dbt_utils.generate_surrogate_key(['customer_id']) }} AS customer_key,
 	   b.phone,
 	   b.fax,
 	   b.email,
-	   de.employee_key
+	   de.employee_key,
+       b.dbt_valid_from,
+       b.dbt_valid_to
 FROM base b
 LEFT JOIN {{ ref('dim_employee') }} de
 ON b.support_rep_id = de.employee_id

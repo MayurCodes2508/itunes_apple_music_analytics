@@ -1,11 +1,18 @@
 version: 2
 models:
-  - name: dim_customer
+  - name: dim_customer_history
     description: >
-      Dimensional model for customer,
+      History dimensional model for customer,
       1-M relationship with employee_key having multiple customer_key so dim_customer.employee_key (FK) ->
       dim_employee.employee_key (PK),
-      Grain: 1 row represents 1 unique identifier customer_key of customer
+      Grain: 1 row represents 1 unique identifier customer_key of customer and valid from
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - customer_id
+              - dbt_valid_from
+
     columns:
       - name: customer_key
         description: >
@@ -19,7 +26,6 @@ models:
           Unique identifier for a customer
         tests:
           - not_null
-          - unique
 
       - name: first_name
         description: >
@@ -73,3 +79,18 @@ models:
               arguments:
                 to: ref('dim_employee')
                 field: employee_key
+
+      - name: dbt_valid_from
+        description: >
+          Valid from timestamp of a row
+        tests:
+          - not_null
+      
+      - name: dbt_valid_to
+        description: >
+          Valid to timestamp of a row
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "IS NULL OR dbt_valid_to > dbt_valid_from"
+        

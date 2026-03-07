@@ -22,7 +22,7 @@ SELECT {{ dbt_utils.generate_surrogate_key(['invoice_id']) }} AS invoice_key,
 	   b.billing_country,
 	   b.billing_postal_code
 FROM base b
-JOIN {{ ref('dim_customer') }} dc
+JOIN {{ ref('dim_customer_current') }} dc
 ON b.customer_id = dc.customer_id
 JOIN {{ ref('dim_date') }} dd
 ON b.invoice_date = dd.date

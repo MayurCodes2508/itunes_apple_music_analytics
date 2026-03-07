@@ -9,7 +9,7 @@ SELECT di.billing_country,
 FROM {{ ref('dim_invoice') }} di
 JOIN {{ ref('fact_invoice_line') }} f
 ON di.invoice_key = f.invoice_key
-JOIN {{ ref('dim_customer') }} dc
+JOIN {{ ref('dim_customer_current') }} dc
 ON f.customer_key = dc.customer_key
 GROUP BY 1,
          2,

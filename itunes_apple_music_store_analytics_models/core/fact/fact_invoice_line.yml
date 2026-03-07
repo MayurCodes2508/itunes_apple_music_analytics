@@ -3,7 +3,7 @@ models:
   - name: fact_invoice_line
     description: >
       Fact model for invoice line,
-      1:M relatonship with invoice_key, date_key, customer_key, employee_key, track_key having multiple
+      1:M relatonship with invoice_key, date_key, customer_key, track_key having multiple
       invoice_line_key,
       Grain: 1 row represents 1 unique identifier invoice_line_key of invoice line
     columns:
@@ -48,15 +48,6 @@ models:
                 to: ref('dim_customer')
                 field: customer_key
 
-      - name: employee_key
-        description: >
-          Unique identifier for an employee
-        tests:
-          - relationships:
-              arguments:
-                to: ref('dim_employee')
-                field: employee_key
-
       - name: track_key
         description: >
           Unique identifier for a track
@@ -65,6 +56,15 @@ models:
               arguments:
                 to: ref('dim_track')
                 field: track_key
+
+      - name: invoice_date
+        description: >
+          Date of an invoice
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_invoice_focused')
+                field: invoice_date
 
       - name: unit_price
         description: >

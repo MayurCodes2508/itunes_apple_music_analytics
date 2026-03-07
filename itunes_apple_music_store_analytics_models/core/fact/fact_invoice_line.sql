@@ -1,30 +1,35 @@
-{{ config(materialized = 'table') }}
-
-WITH base AS (
-SELECT invoice_line_id,
-	   invoice_id,
-       track_id,
-       unit_price,
-       quantity
-FROM {{ ref('stg_invoice_line_focused') }}
-)
+{{ config(materialized = 'incremental',
+          unique_key = 'invoice_line_id',
+          incremental_strategy = 'merge',
+          cluster_by = ['customer_key',
+		                'track_key']) }}
 
 SELECT {{ dbt_utils.generate_surrogate_key(['invoice_line_id']) }} AS invoice_line_key,
-       b.invoice_line_id,
+	   sil.invoice_line_id,
        di.invoice_key,
 	   di.date_key,
 	   di.customer_key,
-	   de.employee_key,
 	   dt.track_key,
-	   b.unit_price,
-	   b.quantity,
-	   b.unit_price * b.quantity AS total_revenue
-FROM base b
+       si.invoice_date,
+	   sil.unit_price,
+	   sil.quantity,
+	   sil.unit_price * sil.quantity AS total_revenue
+FROM {{ ref('stg_invoice_line_focused') }} sil
+JOIN {{ ref('stg_invoice_focused') }} si
+ON sil.invoice_id = si.invoice_id
 JOIN {{ ref('dim_invoice') }} di
-ON b.invoice_id = di.invoice_id
-JOIN {{ ref('dim_customer') }} dc
+ON si.invoice_id = di.invoice_id
+JOIN {{ ref('dim_customer_current') }} dc
 ON di.customer_key = dc.customer_key
-JOIN {{ ref('dim_employee') }} de
-ON dc.employee_key = de.employee_key
 JOIN {{ ref('dim_track') }} dt
-ON b.track_id = dt.track_id
+ON sil.track_id = dt.track_id
+
+{% if is_incremental() %}
+
+WHERE sil.invoice_line_id > (
+      SELECT MAX(invoice_line_id)
+      FROM {{ this }})
+      OR si.invoice_date >=
+      DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
+
+{% endif %}

@@ -2,13 +2,15 @@
 
 ## 🚀 Overview
 
-This project implements a production-style analytics pipeline on the Apple iTunes dataset using **dbt and BigQuery**.
+This project implements a **production-style analytics engineering pipeline** on the Apple iTunes dataset using **dbt and Google BigQuery**.
 
-The objective is to transform raw relational data into an analytics-ready warehouse using dimensional modeling principles to enable reliable insights into customer behavior, sales performance, and music trends.
+The goal of this project is to transform raw relational datasets into an **analytics-ready warehouse** using dimensional modeling principles, enabling reliable insights into customer behavior, sales performance, and music consumption trends.
 
-The architecture follows a layered ELT approach:
+The warehouse architecture follows a modern **ELT layered design**:
 
 Raw → Staging → Core (Dimensional Model) → Marts
+
+This project demonstrates **real-world analytics engineering practices including dimensional modeling, data quality testing, SCD handling, incremental modeling, and warehouse optimization.**
 
 ---
 
@@ -16,14 +18,15 @@ Raw → Staging → Core (Dimensional Model) → Marts
 
 | Component | Count |
 |----------|------|
-| Models | 37 |
+| Models | 38 |
 | Seeds | 11 |
 | Sources | 11 |
-| Data Tests | 108 |
+| Data Tests | 119 |
+| Snapshots | 1 |
 | Warehouse | BigQuery |
 | Transformation Tool | dbt |
 
-This project includes **extensive automated testing and dimensional modeling practices**, reflecting production-style analytics engineering workflows.
+The project contains **extensive automated data validation and production-style modeling patterns.**
 
 ---
 
@@ -33,24 +36,24 @@ This project includes **extensive automated testing and dimensional modeling pra
 
 Raw datasets are ingested into the warehouse using **dbt seeds**.
 
-This layer represents the landing zone of source data before any transformation or validation occurs.
+This layer acts as the **initial landing zone** for source data before any transformation or validation occurs.
 
 ---
 
 ## 🔹 Staging Layer
 
-Responsible for preparing raw data for downstream modeling.
+The staging layer prepares raw data for downstream analytical modeling.
 
-Key responsibilities include:
+Responsibilities include:
 
 - Data type standardization
 - Column renaming and trimming
-- Timestamp parsing and normalization
+- Timestamp normalization
 - Grain alignment
-- Source normalization
+- Source data cleaning
 - Initial data validation
 
-The staging layer ensures that **raw ingestion issues are caught early before propagating into analytical models**.
+This layer ensures **data inconsistencies are handled early before propagating into the warehouse models.**
 
 ---
 
@@ -60,10 +63,11 @@ The core layer implements a **star schema** designed for analytical workloads.
 
 This layer enforces:
 
-- Business logic
 - Dimensional modeling rules
+- Surrogate key generation
 - Referential integrity
-- Surrogate key strategy
+- Business logic implementation
+- Many-to-many relationship resolution
 
 ---
 
@@ -73,15 +77,22 @@ This layer enforces:
 
 Grain:
 
-```
-Invoice Line Level (Atomic Fact)
-```
+Invoice Line Level (Atomic Transaction Grain)
+
+Key metrics:
+
+- Quantity purchased
+- Unit price
+- Total revenue
+
+The fact table is implemented using **incremental materialization and clustering optimization** for efficient warehouse processing.
 
 ---
 
 ## 📐 Dimension Tables
 
-- `dim_customer`
+- `dim_customer_current`
+- `dim_customer_history` (SCD Type 2)
 - `dim_employee`
 - `dim_track`
 - `dim_album`
@@ -92,42 +103,50 @@ Invoice Line Level (Atomic Fact)
 - `dim_date`
 - `dim_invoice`
 
+### Customer Dimension Strategy
+
+Customer data is implemented using **Slowly Changing Dimension Type 2**.
+
+Structure:
+
+snapshot_customer → dim_customer_history → dim_customer_current
+
+This allows:
+
+- Historical customer tracking
+- Current customer dimension for analytics joins
+- Proper temporal modeling
+
 ---
 
 ## 🔗 Bridge Tables (Many-to-Many Modeling)
 
-- `bridge_playlist_tracks`
+Many-to-many relationships are resolved using bridge tables:
+
+- `bridge_playlist_track`
 - `bridge_track_composer`
 
-These resolve many-to-many relationships between entities such as:
+Examples:
 
-- Tracks ↔ Playlists
-- Tracks ↔ Composers
+Tracks ↔ Playlists  
+Tracks ↔ Composers
 
----
-
-### Core Modeling Principles
-
-- Atomic fact table design
-- Deterministic surrogate key generation
-- Dimension conformance
-- Referential integrity across fact and dimensions
-- Separation of staging and business logic
+This preserves **correct dimensional grain while enabling flexible analytics queries.**
 
 ---
 
 # 🧪 Data Quality & Testing
 
-The project implements **108 automated data tests** across staging and core layers using **dbt**.
+The project implements **119 automated data tests** across staging and core layers using **dbt**.
 
 ### Structural Integrity
 
-- `not_null` tests
-- `unique` tests
+- `not_null`
+- `unique`
 
 ### Referential Integrity
 
-- `relationships` tests ensuring fact-to-dimension dependencies
+- `relationships` tests ensuring valid foreign key dependencies
 
 ### Grain Enforcement
 
@@ -135,28 +154,88 @@ The project implements **108 automated data tests** across staging and core laye
 
 ### Business Rule Validation
 
-Expression tests including:
+Expression tests such as:
 
 - `quantity >= 0`
 - `unit_price >= 0`
 - `total_revenue >= 0`
 - `milliseconds >= 0`
 
-These tests ensure **data reliability, model correctness, and protection against upstream data issues**.
+These tests guarantee:
+
+- Data integrity
+- Correct dimensional grain
+- Protection against upstream data issues
+
+---
+
+# 🔁 Temporal Modeling & Incremental Strategy
+
+The warehouse includes production-ready temporal modeling patterns.
+
+### Snapshot (SCD Type 2)
+
+Customer dimension history is maintained using **dbt snapshots**.
+
+This enables:
+
+- Historical tracking of customer attribute changes
+- Slowly changing dimension modeling
+
+---
+
+### Incremental Fact Processing
+
+The `fact_invoice_line` table uses **incremental materialization** with:
+
+- `merge` strategy
+- late arriving data handling
+- cluster optimization
+
+This reduces warehouse compute cost and improves runtime performance.
+
+---
+
+# ⚡ Warehouse Optimization
+
+Query performance optimization techniques include:
+
+### Clustering
+
+Fact table clustering:
+
+- `customer_key`
+- `track_key`
+
+Benefits:
+
+- Reduced query scan size
+- Faster analytical queries
+
+---
+
+### Incremental Models
+
+Only new or updated records are processed during pipeline runs.
+
+Benefits:
+
+- Reduced compute cost
+- Faster pipeline execution
 
 ---
 
 # 📊 Marts Layer (Business-Facing Models)
 
-The marts layer exposes curated analytical datasets for business analysis.
+The marts layer exposes curated analytical datasets used for reporting and insights.
 
 Implemented marts include:
 
 - `mart_avg_prices_of_different_types_of_music`
-- `mart_best_customers`
+- `mart_best_customer`
 - `mart_city_having_best_customer`
 - `mart_countries_having_the_most_invoices`
-- `mart_customer_amount_spent_on_artists`
+- `mart_customer_amount_spent_on_artist`
 - `mart_customer_name_genre_and_email_starting_with_a`
 - `mart_most_popular_artists`
 - `mart_most_popular_countries_for_music_purchases`
@@ -168,13 +247,14 @@ Implemented marts include:
 - `mart_top_customers_spent_most_money_for_each_country`
 - `mart_tracks_with_song_length_longer_than_avg_length`
 
-These marts enable:
+These marts enable analysis of:
 
-- Revenue analysis
+- Revenue performance
 - Customer segmentation
-- Genre and artist trend identification
-- Geographic sales insights
-- Operational employee performance evaluation
+- Artist popularity
+- Geographic music trends
+- Playlist behavior
+- Employee sales performance
 
 ---
 
@@ -184,53 +264,38 @@ These marts enable:
 models/
 │
 ├── staging
-│   └── Source standardization & data cleaning
+│   └── Data cleaning and normalization
 │
 ├── intermediate
-│   └── Data normalization & preprocessing logic
+│   └── Preprocessing logic
 │
 ├── core
 │   ├── dimensions
-│   │   └── Conformed dimension models
-│   │
 │   ├── facts
-│   │   └── Atomic transactional fact tables
-│   │
 │   └── bridges
-│       └── Many-to-many relationship resolution
 │
 └── marts
-    └── Business-facing analytical datasets
+    └── Business analytical datasets
 ```
 
-This layered structure enforces **clear separation between raw data preparation, business logic modeling, and analytical consumption layers**.
+This layered design ensures:
 
----
-
-# 🔁 Incremental & Temporal Strategy
-
-The warehouse design supports production-ready temporal modeling patterns including:
-
-- Incremental modeling patterns
-- SCD Type 1 / Type 2 readiness
-- Surrogate key determinism
-- Late arriving data considerations
-- Merge-based update strategy compatible with BigQuery
+- Clear transformation boundaries
+- Maintainable warehouse logic
+- Scalable analytics pipelines
 
 ---
 
 # 🛠 Tech Stack
 
-- **BigQuery** — Cloud Data Warehouse
-- **dbt** — Data Transformation & Modeling
-- **SQL**
-- **Git** — Version Control
+- **BigQuery** — Cloud Data Warehouse  
+- **dbt** — Data Transformation Framework  
+- **SQL**  
+- **Git** — Version Control  
 
 ---
 
 # ▶️ Running the Project
-
-To reproduce the warehouse pipeline:
 
 ### Install dependencies
 
@@ -244,13 +309,13 @@ pip install dbt-bigquery
 dbt seed
 ```
 
-### Build the warehouse models
+### Build models
 
 ```
 dbt run
 ```
 
-### Run data quality tests
+### Run tests
 
 ```
 dbt test
@@ -265,47 +330,47 @@ dbt docs serve
 
 ---
 
-# 🎯 Business Objectives
+# 🎯 Business Questions Answered
 
 The warehouse enables analysis of:
 
-- Customer purchasing behavior
-- Revenue performance
-- Artist and genre popularity
-- Country-level purchasing patterns
-- Playlist composition trends
-- Employee sales performance
+- Who are the highest spending customers?
+- Which genres generate the most revenue?
+- What countries purchase the most music?
+- Which artists are most popular?
+- What tracks exceed average song length?
+- Which employees generate the highest sales?
 
 ---
 
 # 🧠 Key Concepts Applied
 
 - Dimensional Modeling
-- Star Schema Architecture
-- Fact & Dimension Separation
+- Star Schema Design
+- Slowly Changing Dimensions (SCD Type 2)
+- Incremental Fact Processing
 - Bridge Tables for Many-to-Many Relationships
 - Surrogate Key Strategy
-- Layered Warehouse Architecture
-- ELT Paradigm
-- Data Quality Testing with dbt
-- Referential Integrity Enforcement
+- Layered ELT Architecture
+- Automated Data Testing
+- Query Optimization (Clustering)
 
 ---
 
 # 🔮 Future Enhancements
 
-Planned improvements include:
+Potential improvements:
 
-- Production-grade SCD Type 2 implementation
-- Cost-aware partitioning and clustering strategies
-- CI/CD pipeline integration for dbt deployments
-- Query scan optimization and cost monitoring
-- Environment separation (dev / prod)
+- Partitioned fact tables
+- Advanced cost monitoring
+- CI/CD pipelines for dbt deployment
+- Data freshness monitoring
+- Production orchestration integration
 
 ---
 
 # 📌 Summary
 
-This project demonstrates enterprise-style analytics engineering practices focused on semantic clarity, dimensional integrity, and scalable warehouse design using modern ELT principles.
+This project demonstrates **production-grade analytics engineering practices** including dimensional modeling, temporal data management, incremental processing, and automated data quality enforcement.
 
-The implementation emphasizes **robust data quality validation, layered modeling architecture, and production-ready analytical design**.
+The warehouse architecture prioritizes **semantic clarity, scalable transformations, and reliable analytical outputs.**

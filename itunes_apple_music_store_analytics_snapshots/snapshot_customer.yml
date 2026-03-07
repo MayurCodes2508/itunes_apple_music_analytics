@@ -1,0 +1,87 @@
+version: 2
+models:
+  - name: snapshot_customer
+    description: >
+      Snapshot for customer,
+      Grain: 1 row represents 1 unique identifier dbt_scd_id of scd
+
+    columns:
+      - name: customer_id
+        description: >
+          Unique identifier for a customer
+        tests:
+          - not_null
+
+      - name: first_name
+        description: >
+          Customer first name
+
+      - name: last_name
+        description: >
+          Customer last name
+
+      - name: company
+        description: >
+          Company the customer works for
+
+      - name: address
+        description: >
+          Customer address
+
+      - name: city
+        description: >
+          City the customer lives in
+
+      - name: state
+        description: >
+          State the customer lives in
+
+      - name: country
+        description: >
+          Country the customer lives in
+
+      - name: postal_code
+        description: >
+          Customer postal code
+
+      - name: phone
+        description: >
+          Customer phone number
+          
+      - name: fax
+        description: >
+          Customer fax
+
+      - name: email
+        description: >
+          Customer email
+
+      - name: support_rep_id
+        description: >
+          Unique identifier for an employee
+
+      - name: dbt_scd_id
+        description: >
+          Unique identifier for scd
+        tests:
+          - not_null
+          - unique
+
+      - name: dbt_updated_at
+        description: >
+          Updated at timestamp
+
+      - name: dbt_valid_from
+        description: >
+          Valid from timestamp of a row
+        tests:
+          - not_null
+      
+      - name: dbt_valid_to
+        description: >
+          Valid to timestamp of a row
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "IS NULL OR dbt_valid_to > dbt_valid_from"
+        

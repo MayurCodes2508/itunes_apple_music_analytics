@@ -5,7 +5,7 @@ SELECT dc.customer_key,
 	   dc.last_name,
 	   dt.artist_name,
 	   SUM(f.total_revenue) AS total_invoice
-FROM {{ ref('dim_customer') }} dc
+FROM {{ ref('dim_customer_current') }} dc
 JOIN {{ ref('fact_invoice_line') }} f
 ON dc.customer_key = f.customer_key
 JOIN {{ ref('dim_track') }} dt
